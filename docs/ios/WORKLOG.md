@@ -11,9 +11,9 @@
 | 저장소 / 브랜치 | `mallang0723/mallan-ipa` / `codex/ios-v1` |
 | Goal 등록 | 호출 가능한 Goal 도구를 찾지 못함. 등록했다고 주장하지 않고 GOAL의 완료 조건을 따라 작업 |
 | 원본 소스 | `engine/`, 원본만의 커밋 `1ca7c63`과 실제 iOS 수정을 구분 |
-| 다음 작업 | Mac에서 README 명령 → Xcode 컴파일/실행 → 실제 네이티브 오류 수정 → iPhone 완료 조건 확인 |
+| 다음 작업 | 사용자가 연결 가능한 macOS/Xcode 환경의 접속 정보를 제공하면 README 빌드 → Xcode 컴파일/실행 → 네이티브 오류 수정 → iPhone 완료 조건 확인 |
 | 필요한 외부 입력 | macOS/Xcode, iPhone, 본인 Team/서명, 앱에 입력할 허용된 API 연결 |
-| 원격 작업 | 작업 저장소 `codex/ios-v1` 푸시 시 GitHub 403. 연결 계정 `syhekate`에 쓰기 권한 없음. 원격 변경/PR 생성 없음. upstream 푸시·배포·유료 호출 없음 |
+| 원격 작업 | 새 환경에서 `codex/ios-v1` 푸시 성공. `gh auth status`는 주입 토큰 invalid, 사용자 API 및 PR GraphQL은 Forbidden. 현재 계정 이름 미확인; 초안 PR 생성은 차단됨. upstream 푸시·배포·유료 호출 없음 |
 
 이전에는 인계 문서만 있었다. 이번에는 실제 코드 작성과 실행을 진행했다. 새 세션에서 설계부터 다시 시작하거나 Linux 결과를 iPhone 성공으로 바꾸지 않는다.
 
@@ -99,3 +99,12 @@ node scripts/smoke-ios.mjs
 - [ ] 개인 Team 설치 및 필요한 경우 서명 앱 IPA 포장.
 
 그룹/RP/기본 Game 코드는 보존했다. 모의 Roleplay/Tracker와 Conversation Tic-Tac-Toe 외 전체 게임 진행, 거대 자산 성능, 모든 공급자·에이전트 호환을 주장하지 않는다. 남은 고급 기능은 GOAL의 제외 범위를 유지한다. Xcode 결과가 오면 해당 오류부터 이어서 수정한다.
+
+## 2026-10-07 — transfer ZIP 복원 및 후속 재개
+
+- 기존 `/workspace/mallan-ipa`를 보존하고 `/workspace/marinara-ios-restored`의 새 checkout에 RESTORE 순서로 복원했다. 복원 커밋 `af6019d`의 트리 `d57e12ae8343083ee3fb502f3a5feab278cb1b7a`가 manifest의 expected_tree와 정확히 일치한다. 위의 이전 구현 커밋/bundle 기록은 과거 전달 이력이며, 이번 복원물의 커밋과 구별한다.
+- 플랫폼 HTTPS 경로로 repository clone 및 `git push -u origin codex/ios-v1` 성공. `git ls-remote`에서 원격 복원 커밋 일치를 확인했다. 계정 이름을 확인하는 `gh api user`는 Forbidden이며 의도한 Mallang 계정이라고 단정하지 않는다.
+- `gh pr list` 및 `gh pr create --draft --base main --head codex/ios-v1`는 `https://api.github.com/graphql: Forbidden`으로 실패했다. 초안 PR은 생성되지 않았다. 검토 가능한 제목/본문은 로컬 `.work/ios-pr-body.md`에 준비했다. 브랜치에서 수동 PR을 시작할 링크: https://github.com/mallang0723/mallan-ipa/compare/main...codex/ios-v1?expand=1 (초안으로 생성해야 함).
+- 이번 확인: 네 스크립트의 Node/Bash 구문, Info.plist 및 공유 scheme XML 파싱 통과. 기존 Linux/Chromium 통합 결과는 이전 기록이며 이번 세션에서 다시 실행한 것으로 주장하지 않는다.
+- GOAL/ASTRA_REQUEST/인계 명세와 호스트/프로젝트/빌드 코드를 읽어 재개 지점을 확인했다. 기존 기록대로 독립 Linux 구현은 완료되어 있으며 다음 필수 경계는 실제 Xcode 컴파일이다. 이 환경에는 Xcode/Swift/Apple SDK가 없고 실제 API 호출 권한·연결도 제공되지 않았다. 소스/시뮬레이터/iPhone/IPA 상태를 구분하며 전체 Goal은 계속 미완료다.
+- 사용자가 macOS/Xcode 환경을 연결할 수 있다고 답했다. 접속 방법·환경 연결을 요청했으며, 연결되면 Xcode 빌드 결과의 첫 실제 오류부터 수정한다. API 키/서명 자료를 채팅이나 Git에 넣지 않는다.
