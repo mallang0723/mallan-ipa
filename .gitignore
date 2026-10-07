@@ -1,0 +1,11 @@
+ios/Vendor/
+ios/Resources/engine/
+ios/Resources/.engine-stage/
+ios/build/
+.work/
+**/xcuserdata/
+*.xcuserstate
+*.ipa
+*.p12
+*.mobileprovision
+.DS_Store
